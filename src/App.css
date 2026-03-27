@@ -2,21 +2,29 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
 }
 
 .app-header {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
   padding: 2rem;
   text-align: center;
   color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .app-header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
   font-weight: 300;
+  background: linear-gradient(90deg, #ffffff, #64ffda);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .app-header p {
@@ -43,18 +51,26 @@
   border-radius: 15px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  min-height: 70vh;
 }
 
 .welcome-message {
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .welcome-message h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   font-weight: 300;
+  color: #64ffda;
 }
 
 .welcome-message p {
@@ -164,6 +180,7 @@
 .input-form button:hover:not(:disabled) {
   background: rgba(86, 98, 246, 1);
   transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .input-form button:disabled {
@@ -188,5 +205,13 @@
   .message-content {
     max-width: 85%;
     padding: 0.8rem 1.2rem;
+  }
+  
+  .app-header h1 {
+    font-size: 2rem;
+  }
+  
+  .app-header p {
+    font-size: 1rem;
   }
 }
