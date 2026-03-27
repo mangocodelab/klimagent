@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+        }
+        .ai-message {
+            background-color: #f5f5f5;
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px        }
+        button {
+            padding: 10px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Coding Assistant</h1>
+        
+        <div class="chat-container" id="chatContainer">
+            <div id="messages"></div>
+        </div>
+        
+        <div>
+            <input type="text" id="messageInput" placeholder="Ask the AI coding assistant..." />
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        
+        // Add message to chat
+        function addMessage(content, isUser = false) {
+            const messagesDiv = document.getElementById('messages');
+            const messageClass = isUser ? 'user-message' : 'ai-message';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + messageClass;
+            messageDiv.innerHTML = content;
+            
+            document.getElementById('messages').appendChild(messageDiv);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        }
+        
+        // Send message
+        document.getElementById('sendButton').onclick = function() {
+            const message = document.getElementById('messageInput').value;
+            if (message) {
+                addMessage(message, true);
+                socket.emit('chat message', { message });
+                document.getElementById('messageInput').value = '';
+            }
+        };
+        
+        // Listen for responses
+        socket.on('chat response', (data) => {
+            addMessage(data.content);
+        });
+    </script>
+</body>
+</html>
