@@ -19,7 +19,7 @@ function App() {
     e.preventDefault()
     if (!input.trim() || isLoading) return
 
-    const userMessage = { role: 'user', content: input }
+    const userMessage = { role: 'user', content: input, timestamp: Date.now() }
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
@@ -31,20 +31,28 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [...messages, userMessage]
+          message: input
         })
       })
 
       if (!response.ok) throw new Error('Failed to get response')
       
       const data = await response.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
+      const aiMessage = { 
+        role: 'assistant', 
+        content: data.response,
+        timestamp: Date.now() + 1
+      }
+      setMessages(prev => [...prev, aiMessage])
     } catch (error) {
       console.error('Error:', error)
-      setMessages(prev => [...prev, { 
+      const errorMessage = { 
         role: 'assistant', 
-        content: 'Sorry, I encountered an error. Please try again.' 
-      }])
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: Date.now() + 1,
+        error: true
+      }
+      setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
     }
@@ -53,15 +61,15 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🤖 AI Coding Assistant</h1>
-        <p>Powered by NVIDIA NIM API</p>
+        <h1>🤖 KlimCode Agent</h1>
+        <p>AI-Powered Coding Assistant</p>
       </header>
 
       <div className="chat-container">
         <div className="messages">
           {messages.length === 0 && (
             <div className="welcome-message">
-              <h3>Welcome to your AI Coding Assistant!</h3>
+              <h3>Welcome to KlimCode Agent!</h3>
               <p>Ask me to write code, explain concepts, or help with programming problems.</p>
             </div>
           )}
