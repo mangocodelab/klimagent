@@ -1,6 +1,5 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
 const path = require('path');
 const dotenv = require('dotenv');
 const { Configuration, OpenAIApi } = require('openai');
@@ -10,16 +9,10 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware
 app.use(express.json());
-
-// Routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 // NVIDIA NIM API integration
 const configuration = new Configuration({
@@ -29,47 +22,52 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-// Handle chat messages
-io.on('connection', (socket) => {
-  console.log('User connected');
-  
-  socket.on('chat message', async (data) => {
-    try {
-      // Send user message back
-      socket.emit('chat response', { content: `<strong>You:</strong> ${data.message}` });
-      
-      // Get response from NVIDIA NIM API
-      const response = await openai.createChatCompletion({
-        model: "nv-llama2-70b",
-        messages: [{
-          role: "user",
-          content: data.message
-        }],
-        max_tokens: 1024,
-        temperature: 0.7,
-        top_p: 0.95,
-        frequency_penalty: 0.5,
-        presence_penalty: 0.5
-      });
-      
-      // Send AI response back to client
-      socket.emit('chat response', { 
-        content: `<strong>AI Assistant:</strong> ${response.data.choices[0].message.content}`,
-        role: "assistant"
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      socket.emit('chat response', { 
-        content: "Sorry, I encountered an error processing your request.",
-        role: "assistant",
-        error: true
-      });
+// API Routes
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' });
+});
+
+// Chat endpoint
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
     }
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
+    
+    // Get response from NVIDIA NIM API
+    const response = await openai.createChatCompletion({
+      model: "nv-llama2-70b",
+      messages: [{
+        role: "user",
+        content: message
+      }],
+      max_tokens: 1024,
+      temperature: 0.7,
+      top_p: 0.95,
+      frequency_penalty: 0.5,
+      presence_penalty: 0.5
+    });
+    
+    return res.json({ 
+      response: response.data.choices[0].message.content,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Failed to get response from AI' });
+  }
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' });
+});
+
+// Serve the React app for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start server
