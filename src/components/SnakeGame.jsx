@@ -15,11 +15,30 @@ const SnakeGame = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [speed, setSpeed] = useState(INITIAL_SPEED);
+  const [level, setLevel] = useState(1);
+  const [obstacles, setObstacles] = useState([]);
+  const [powerUps, setPowerUps] = useState([]);
   
   const directionRef = useRef(direction);
   const gameStartedRef = useRef(gameStarted);
   const gameOverRef = useRef(gameOver);
   const isPausedRef = useRef(isPaused);
+
+  // Generate obstacles
+  const generateObstacles = () => {
+    const newObstacles = [];
+    // Add some fixed obstacles
+    for (let i = 5; i < 10; i++) {
+      newObstacles.push({ x: 5, y: i });
+      newObstacles.push({ x: 15, y: i });
+    }
+    newObstacles.push({ x: 10, y: 15 });
+    newObstacles.push({ x: 10, y: 16 });
+    newObstacles.push({ x: 10, y: 17 });
+    newObstacles.push({ x: 10, y: 18 });
+    newObstacles.push({ x: 10, y: 19 });
+    return newObstacles;
+  };
 
   // Initialize game
   const initGame = () => {
@@ -34,14 +53,32 @@ const SnakeGame = () => {
     setGameStarted(true);
     gameStartedRef.current = true;
     setSpeed(INITIAL_SPEED);
+    setLevel(1);
+    setObstacles(generateObstacles());
+    setPowerUps([]);
   };
 
   // Generate random food position
   const generateFood = () => {
-    return {
-      x: Math.floor(Math.random() * GRID_SIZE),
-      y: Math.floor(Math.random() * GRID_SIZE)
-    };
+    let newFood;
+    let validPosition = false;
+    
+    while (!validPosition) {
+      newFood = {
+        x: Math.floor(Math.random() * GRID_SIZE),
+        y: Math.floor(Math.random() * GRID_SIZE)
+      };
+      
+      // Check if food is not on snake or obstacle
+      const onSnake = snake.some(segment => segment.x === newFood.x && segment.y === newFood.y);
+      const onObstacle = obstacles.some(obstacle => obstacle.x === newFood.x && obstacle.y === newFood.y);
+      
+      if (!onSnake && !onObstacle) {
+        validPosition = true;
+      }
+    }
+    
+    return newFood;
   };
 
   // Handle keyboard input
@@ -132,9 +169,16 @@ const SnakeGame = () => {
           return prevSnake;
         }
         
+        // Check if snake hits obstacle
+        if (obstacles.some(obstacle => obstacle.x === head.x && obstacle.y === head.y)) {
+          setGameOver(true);
+          gameOverRef.current = true;
+          return prevSnake;
+        }
+        
         // Check if food is eaten
         if (head.x === food.x && head.y === food.y) {
-          // Grow snake
+          // Grow snake and generate new food
           newSnake.unshift(head);
           setFood(generateFood());
           setScore(prev => {
@@ -142,9 +186,11 @@ const SnakeGame = () => {
             if (newScore > highScore) {
               setHighScore(newScore);
             }
+            // Increase level every 100 points
+            setLevel(Math.floor(newScore / 100) + 1);
             return newScore;
           });
-          return [head, ...newSnake];
+          return newSnake;
         } else {
           // Move snake
           newSnake.unshift(head);
@@ -156,7 +202,7 @@ const SnakeGame = () => {
     
     const gameInterval = setInterval(moveSnake, speed);
     return () => clearInterval(gameInterval);
-  }, [snake, food, speed]);
+  }, [snake, food, speed, obstacles]);
 
   // Initialize high score from localStorage
   useEffect(() => {
@@ -171,13 +217,19 @@ const SnakeGame = () => {
     localStorage.setItem('snakeHighScore', highScore.toString());
   }, [highScore]);
 
+  // Generate initial food
+  useEffect(() => {
+    setFood(generateFood());
+  }, []);
+
   return (
     <div className="snake-game">
       <div className="game-info">
-        <h2>Snake Game</h2>
+        <h2>Enhanced Snake Game</h2>
         <div className="game-stats">
           <div>Score: {score}</div>
           <div>High Score: {highScore}</div>
+          <div>Level: {level}</div>
         </div>
         <div className="game-controls">
           <button onClick={initGame} disabled={gameStarted && !gameOver}>
@@ -197,6 +249,7 @@ const SnakeGame = () => {
         </div>
         <div className="game-instructions">
           <p>Use arrow keys to control the snake. Press spacebar to pause.</p>
+          <p>Avoid obstacles and don't hit the walls or yourself!</p>
         </div>
       </div>
       
@@ -220,11 +273,13 @@ const SnakeGame = () => {
             const isSnake = snake.some(segment => segment.x === x && segment.y === y);
             const isHead = isSnake && snake[0].x === x && snake[0].y === y;
             const isFood = food.x === x && food.y === y;
+            const isObstacle = obstacles.some(obstacle => obstacle.x === x && obstacle.y === y);
             
             let cellClass = 'grid-cell';
             if (isHead) cellClass += ' snake-head';
             else if (isSnake) cellClass += ' snake-body';
             if (isFood) cellClass += ' food';
+            if (isObstacle) cellClass += ' obstacle';
             
             return (
               <div 
