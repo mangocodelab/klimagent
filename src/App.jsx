@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './App.css'
+import SnakeGame from './components/SnakeGame'
 
 function App() {
   const [messages, setMessages] = useState([])
@@ -108,6 +109,10 @@ function App() {
             {isLoading ? '⏳' : '➤'}
           </button>
         </form>
+      </div>
+      
+      <div className="snake-game-container">
+        <SnakeGame />
       </div>
     </div>
   )
