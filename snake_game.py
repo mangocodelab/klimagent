@@ -1,3 +1,4 @@
+# This script runs the enhanced snake game
 import pygame
 import random
 import sys
@@ -78,7 +79,7 @@ def draw_grid():
 
 def draw_snake(snake, invincible):
     for i, segment in enumerate(snake):
-        color = GREEN if not invincible else GOLD
+        color = GOLD if invincible else GREEN
         rect = pygame.Rect(segment[0] * GRID_SIZE, segment[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE)
         pygame.draw.rect(screen, color, rect)
         
@@ -180,7 +181,6 @@ def display_hud(score, level, speed_level):
     screen.blit(high_score_text, (WIDTH // 2 - 100, 10))
 
 def check_collision(snake, food, score, level):
-    global high_score
     head_x, head_y = snake[0]
     
     # Check if snake hits the walls
