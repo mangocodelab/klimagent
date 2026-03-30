@@ -1,91 +1,47 @@
-# KlimCode Agent
+# Snake Game
 
-An advanced AI coding assistant powered by NVIDIA NIM API integration. This application combines a modern React frontend with an Express backend to provide a seamless coding assistance experience.
+A simple snake game implemented in React.
 
 ## Features
 
-- Real-time chat interface with AI assistant
-- Code syntax highlighting for better readability
-- Responsive design that works on all devices
-- Error handling and loading states
-- Clean, modern UI with smooth animations
+- Classic snake gameplay
+- Score tracking
+- Game over detection
+- Responsive controls
 
-## Prerequisites
+## Controls
 
-- Node.js (version 16 or higher)
-- NVIDIA NIM API key (get one from [NVIDIA Build](https://build.nvidia.com/explore/discover))
+Use the arrow keys to control the snake's movement:
+
+- ↑: Move up
+- ↓: Move down
+- ←: Move left
+- →: Move right
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-```
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the game: `npm start`
+4. Open your browser to the URL provided in the terminal
 
-2. Install dependencies:
-```bash
-npm install
-```
+## Game Files
 
-3. Create a `.env` file based on `.env.example` and add your NVIDIA NIM API key:
-```bash
-cp .env.example .env
-# Edit .env to add your API key
-```
-
-4. Start the development server:
-```bash
-npm run dev
-```
-
-## Usage
-
-1. Visit `http://localhost:3000` in your browser
-2. Start chatting with the AI assistant by typing your coding questions in the input field
-3. The assistant will provide code examples, explanations, and programming help
-
-## Project Structure
-
-```
-klimcode-agent/
-├── server.js              # Express server
-├── src/
-│   ├── App.css           # Component styles
-│   ├── App.jsx           # Main React component
-│   ├── main.jsx          # Entry point
-│   └── index.css          # Global styles
-├── public/               # Static assets
-├── package.json          # Project dependencies
-└── .env.example          # Environment variables template
-```
-
-## API Integration
-
-The application integrates with NVIDIA NIM API for advanced AI capabilities. You'll need to:
-
-1. Get an API key from [NVIDIA Build](https://build.nvidia.com/explore/discover)
-2. Add it to your `.env` file as `NIM_API_KEY`
-
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm run server
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-MIT License
+- `snake_game.py`: Main game logic
+- `index.html`: Game interface
+- `src/components/SnakeGame.jsx`: Snake game component
+- `src/components/SnakeGame.css`: Styling for the game component
+- `src/main.jsx`: Entry point for the game
+- `src/App.jsx`: Main application component
+- `src/App.css`: Application styling
+- `package.json`: Project configuration
+- `vite.config.js`: Build configuration
+- `requirements.txt`: Project dependencies
+- `run_game.py`: Python script to run the game
+- `server.js`: Server configuration
+- `setup.md`: Setup instructions
+- `repo_structure.md`: Repository structure information
+- `README.md`: Project documentation
+- `.env`: Environment variables
+- `.env.example`: Example environment variables
+- `.gitignore`: Git ignore rules
