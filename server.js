@@ -7,12 +7,13 @@ const { Configuration, OpenAIApi } = require('openai');
 // Load environment variables
 dotenv.config();
 
+// Create Express app
 const app = express();
 const server = http.createServer(app);
 
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 // NVIDIA NIM API integration
 const configuration = new Configuration({
@@ -20,7 +21,7 @@ const configuration = new Configuration({
   basePath: "https://integrate.api.nvidia.com/v1"
 });
 
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAIAir(configuration);
 
 // API Routes
 app.get('/api/health', (req, res) => {
