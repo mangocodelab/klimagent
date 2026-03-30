@@ -1,26 +1,15 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-// Health check endpoint
-router.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    message: 'API is running',
-    timestamp: new Date().toISOString()
-  });
+const app = express();
+
+// Serve the static files from the React app
+app.use(express.static('dist'));
+
+// Catch all requests that don't match the above and return the index.html file
+app.get('*', (req, res) => {
+  res.sendFile(join(dirname(fileURLToPath(import.meta.url)), 'dist', 'index.html'));
 });
 
-// Chat endpoint
-router.post('/chat', async (req, res) => {
-  try {
-    // This will be handled in the main server file
-    res.json({ 
-      response: 'This is a sample response from the AI assistant',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to process request' });
-  }
-});
-
-module.exports = router;
+export default app;
