@@ -9,10 +9,13 @@ An advanced AI coding assistant powered by NVIDIA NIM API integration. This appl
 - Responsive design that works on all devices
 - Error handling and loading states
 - Clean, modern UI with smooth animations
+- Integrated Snake Game for entertainment
+- Python-based Snake Game implementation
 
 ## Prerequisites
 
 - Node.js (version 16 or higher)
+- Python 3.6 or higher
 - NVIDIA NIM API key (get one from [NVIDIA Build](https://build.nvidia.com/explore/discover))
 
 ## Installation
@@ -56,6 +59,9 @@ klimcode-agent/
 │   └── index.css          # Global styles
 ├── public/               # Static assets
 ├── package.json          # Project dependencies
+├── src/email_validator.py # Python email validator
+├── snake_game.py        # Python Snake Game implementation
+├── requirements.txt      # Python dependencies
 └── .env.example          # Environment variables template
 ```
 
@@ -80,6 +86,20 @@ npm run build
 
 # Start production server
 npm run server
+```
+
+## Python Snake Game
+
+The repository also includes a Python implementation of the Snake game:
+
+1. Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+2. Run the game:
+```bash
+python snake_game.py
 ```
 
 ## Contributing
